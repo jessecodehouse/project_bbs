@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微博</title>
+    <style>
+        body{
+            margin:0px;
+            background-color:#ededed;
+        }
+        .pg_title{
+            height:44px;
+            background-color:#2459a2;
+            padding:1px;
+        }
+        .pg_title .menu{
+            margin-left:160px;
+        }
+        .pg_title .menu .top{
+            float:left;
+            padding:0 16px 0 16px;
+            line-height:44px;
+            color:#c0cddf;
+            text-decoration:none;
+        }
+        .pg_title .menu .top:hover{
+            background-color:#4A4AFF;
+        }
+        .pg_title .login-register a{
+            font-size:80%;
+            float:right;
+            text-decoration:none;
+            color:white;
+            margin:0 20px 0 20px;
+            padding:0 10px 0 10px;
+            line-height:44px;
+        }
+        .pg_title .login-register{
+            margin-right:200px;
+        }
+
+
+
+
+        .pg_body{
+            overflow: hidden;
+            margin:0 160px 0 160px;
+            background-color:white;
+        }
+        .pg_body .pg_body_left{
+            width:65%;
+            height:90%;
+            float:left;
+        }
+        .pg_body .pg_body_left .pg_body_top{
+            height:50px;
+            width:100%;
+        }
+        .pg_body .pg_body_left .pg_body_top .publish{
+            text-decoration:none;
+            width:90px;
+            margin:0 auto;
+            margin-top:10px;
+            height:30px;
+            line-height:30px;
+            text-align:center;
+            color:white;
+            background-color:#84a42b;
+            cursor: pointer
+        }
+        .pg_body .pg_body_left .pg_body_top .publish a{
+            text-decoration: none;
+            color:#fff
+        }
+        .pg_body .pg_body_left .pg_body_top .publish:hover{
+            background-color:#8aab30;
+        }
+
+        .pg_body_left .border{
+            border-style:none none solid none;
+            border-color:#ededed;
+            width:90%;
+            margin:0 auto;
+        }
+        .pg_body_left .news_content img{
+            cursor:pointer;
+        }
+
+
+
+        .pg_body .pg_body_right{
+            width:35%;
+            height:90%;
+            margin:0 0 0 0;
+            float:left;
+        }
+        .pg_body_right .right_1{
+            height:100px;
+        }
+        .right_1 img{
+            margin:20px 16px 0 0;
+        }
+        .right_2 img{
+            margin:20px 0 0 0;
+        }
+
+        .right_3 img{
+            margin:30px 0 0 0;
+        }
+        .right_3 .border{
+            width:300px;
+            height:40px;
+            border-style:none none dotted none;
+            border-width:1px;
+            font-size:80%;
+        }
+
+
+
+        .model{
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color:rgba(220,220,220,0.5);
+            z-index: 100;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+        .model .box{
+            width:500px;
+            height:300px;
+            margin:0 auto;
+            margin-top:150px;
+            background:white;
+            padding-top:1px;
+        }
+        .model .login .login_style{
+            width:250px;
+            height:30px;
+            margin:20px 0 10px 125px;
+        }
+        .model .register .register_style{
+            width:250px;
+            height:30px;
+            margin:10px 0 10px 125px;
+        }
+
+        .model_publish .publish_box{
+            width:600px;
+            height:400px;
+            margin:0 auto;
+            margin-top:100px;
+            background:white;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="pg_title">
+        <div class="menu">
+            <a class="top" href="http://localhost:8888/index">全部</a>
+            <a class="top" href="http://localhost:8888/xinwen">新闻</a>
+            <a class="top" href="http://localhost:8888/duanzi">段子</a>
+            <a class="top" href="http://localhost:8888/keji">科技</a>
+            <a class="top" href="http://localhost:8888/youxi" style="background:#4A4AFF">游戏</a>
+        </div>
+        <div class="login-register">
+            <a href="#" class="login">登陆</a>
+            <a href="#" class="register">注册</a>
+        </div>
+    </div>
+
+
+    <div class="pg_body">
+
+        <div class="pg_body_left">
+            <div class="pg_body_top">
+                <div class="publish">
+                    <a href="#">+  发布</a>
+                </div>
+            </div>
+            <div class="news_content">
+                {% for item in li_news %}
+                <div class="border">
+                    <h3>{{item[0]}}</h3>
+                    <p style="word-break:break-all">{% raw item[4] %}</p>
+                    <p style="color:#99aecb; font-size:10px;" ><img class="like" src="statics/6.png" id={{item[0]}} />&ensp;{{item[5]}}&emsp;&emsp;<img src="statics/7.png"/>&ensp;6&emsp;&emsp;{{item[1]}}&emsp;&emsp;发布时间&ensp;:&ensp;{{item[2]}}&emsp;&emsp;类型&ensp;:&ensp;{{item[3]}}</p>
+                </div>
+                {% end %}
+            </div>
+        </div>
+
+
+        <div class="pg_body_right">
+            <div class="right_1">
+                <img src="statics/2.jpg"/>
+                <img src="statics/3.jpg"/>
+            </div>
+            <div class="right_2">
+                <img src="statics/4.jpg"/>
+            </div>
+            <div class="right_3">
+                <img src="statics/5.jpg"/>
+                <div class="border">
+                    <p>评论内容</p>
+                </div>
+                <div class="border">
+                    <p>评论内容</p>
+                </div>
+                <div class="border">
+                    <p>评论内容</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="model model_login">
+        <div class="login box">
+            <p style="text-align:center;margin-top:30px;font-size:20px;">用户登陆</p>
+                <input id="login_user_name" class="login_style" type="text" placeholder="用户名">
+                <input id="login_pwd" class="login_style" type="password" placeholder="密码">
+                <p></p>
+                <input type="button" class="button" style="margin:0 30px 0 190px" value="登陆">
+                <button class="cancel">取消</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="model model_register">
+        <div class="register box">
+            <p style="text-align:center;margin-top:20px;font-size:20px;">用户注册</p>
+                <input class="register_style" id="register_user_name" type="text" placeholder="请设置用户名">
+                <input class="register_style" id="register_pwd1" type="password" placeholder="请设置密码">
+                <input class="register_style" id="register_pwd2" type="password" placeholder="请再次设置密码">
+                <p></p>
+                <input type="button" class="button" style="margin:0 30px 0 190px" value="注册">
+                <button class="cancel">取消</button>
+        </div>
+    </div>
+
+
+    <div class="model model_publish" >
+        <div class="publish_box" >
+            <input type="text" class="title" placeholder="请输入标题" style="width:300px;height:30px;margin:20px 0 0 20px;font-size:17px;" >
+            <p style="margin:20px 0 0 20px">帖子类型：
+            <input type="radio" value="新闻" name="news_type" checked >新闻
+            <input type="radio" value="段子" name="news_type" >段子
+            <input type="radio" value="科技" name="news_type" >科技
+            <input type="radio" value="游戏" name="news_type" >游戏
+            </p>
+            <textarea class="content" style="resize:none;width:500px;height:200px;margin:20px 0 0 20px;font-size:17px;" placeholder="请输入正文"></textarea>
+            <button style="margin:20px 0 0 20px;" class="publish">发布帖子</button>
+            <button style="margin:20px 0 0 20px;" class="cancel">取消</button>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="/statics/jquery-1.12.4.js"></script>
+    <script>
+        $(".pg_title .login").on("click",function(){
+            $(".model_login").show();
+        })
+        $(".model .login .cancel").on("click",function(){
+            $(".model_login").hide();
+        })
+        $(".pg_title .register").on("click",function(){
+            $(".model_register").show();
+        })
+        $(".model .register .cancel").on("click",function(){
+            $(".model_register").hide();
+        })
+
+        $(".pg_body_left .pg_body_top .publish").on("click",function(){
+            $(".model_publish").show();
+        })
+        $(".model_publish .publish_box .cancel").on("click",function(){
+            $(".model_publish").hide();
+        })
+
+
+
+        $(".model_register .button").on("click",function(){
+            var user_name = $('#register_user_name').val();
+            var pwd1 = $('#register_pwd1').val();
+            var pwd2 = $('#register_pwd2').val();
+            if(user_name=='' || pwd1=='' || pwd2==''){
+                alert('用户名或密码设置错误')
+            }
+            else if(pwd1!=pwd2){
+                alert('两次设置的密码不一致')
+            }
+            else{
+                $.ajax({
+                    url:'/register',
+                    method:'post',
+                    data:{'register_user_name': user_name, 'register_pwd': pwd1},
+                    success:function(data, statusText, xmlHttpRequest){
+                        if(data=='exist'){
+                            alert('用户名已存在')
+                        }
+                        else{
+                            alert('注册成功');
+                            $(".model_register").hide();
+                        }
+                    }
+                })
+            }
+        })
+
+
+        $(".model_login .button").on("click",function(){
+            var user_name = $('#login_user_name').val();
+            var pwd = $('#login_pwd').val();
+            $.ajax({
+                url:'/login',
+                method:'post',
+                data:{'login_user_name': user_name, 'login_pwd': pwd},
+                success:function(data, statusText, xmlHttpRequest){
+                    if(data=='success'){
+                        alert('登陆成功')
+                        $(".model_login").hide()
+                    }
+                    else{
+                        alert('用户名或密码错误')
+                    }
+                }
+            })
+        })
+
+        $(".model_publish .publish_box .publish").on("click",function(){
+            var title = $('.model_publish .publish_box .title').val();
+            var news_type = $('.model_publish .publish_box input[name="news_type"]:checked').val();
+            var content = $('.model_publish .publish_box .content').val();
+            $.ajax({
+                url:'/publish',
+                method:'post',
+                data:{'title': title, 'news_type': news_type, 'content': content},
+                success:function(data, statusText, xmlHttpRequest){
+                    if(data=='success'){
+                        alert('发布成功');
+                        window.location.reload();
+                    }
+                    else{
+                        alert('标题重复，请修改标题')
+                    }
+                }
+            })
+        })
+
+        $('.pg_body_left .news_content .like').on('click',function(){
+            var title = $(this).attr('id');
+            $.ajax({
+                url:'/like',
+                method:'post',
+                data:{'title': title},
+                success:function(data, statusText, xmlHttpRequest){
+                    if(data=='success'){
+                        alert('点赞成功');
+                        window.location.reload();
+                    }
+                    else{
+                        alert('你已点过赞，请不要重复点赞');
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+</html>
