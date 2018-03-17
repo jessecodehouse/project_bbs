@@ -37,6 +37,22 @@
         }
         .pg_title .login-register{
             margin-right:200px;
+            display:{{flag_r_l}};
+        }
+
+        .pg_title .user_name a{
+            font-size:80%;
+            float:right;
+            text-decoration:none;
+            color:white;
+            margin:0 20px 0 20px;
+            padding:0 10px 0 10px;
+            line-height:44px;
+        }
+        .pg_title .user_name{
+            margin-right:200px;
+            display:{{flag_user_name}};
+            cursor: pointer
         }
 
 
@@ -109,7 +125,6 @@
         }
         .right_3 .border{
             width:300px;
-            height:40px;
             border-style:none none dotted none;
             border-width:1px;
             font-size:80%;
@@ -160,15 +175,19 @@
 <body>
     <div class="pg_title">
         <div class="menu">
-            <a class="top" href="http://localhost:8888/index">全部</a>
-            <a class="top" href="http://localhost:8888/xinwen">新闻</a>
-            <a class="top " href="http://localhost:8888/duanzi" style="background:#4A4AFF">段子</a>
-            <a class="top" href="http://localhost:8888/keji">科技</a>
-            <a class="top" href="http://localhost:8888/youxi">游戏</a>
+            <a class="top" href="http://119.29.251.86/">全部</a>
+            <a class="top" href="http://119.29.251.86/xinwen">新闻</a>
+            <a class="top" href="http://119.29.251.86/duanzi" style="background:#4A4AFF">段子</a>
+            <a class="top" href="http://119.29.251.86/keji">科技</a>
+            <a class="top" href="http://119.29.251.86/youxi">游戏</a>
         </div>
         <div class="login-register">
             <a href="#" class="login">登陆</a>
             <a href="#" class="register">注册</a>
+        </div>
+        <div class="user_name">
+            <a class="log_out">退出</a>
+            <a>{{user_name}}</a>
         </div>
     </div>
 
@@ -184,9 +203,9 @@
             <div class="news_content">
                 {% for item in li_news %}
                 <div class="border">
-                    <h3>{{item[0]}}</h3>
+                    <h3><a href="http://119.29.251.86/{{item[6]}}" style="text-decoration:none;color:black;" target="_blank">{{item[0]}}</a></h3>
                     <p style="word-break:break-all">{% raw item[4] %}</p>
-                    <p style="color:#99aecb; font-size:10px;" ><img class="like" src="statics/6.png" id={{item[0]}} />&ensp;{{item[5]}}&emsp;&emsp;<img src="statics/7.png"/>&ensp;6&emsp;&emsp;{{item[1]}}&emsp;&emsp;发布时间&ensp;:&ensp;{{item[2]}}&emsp;&emsp;类型&ensp;:&ensp;{{item[3]}}</p>
+                    <p style="color:#99aecb; font-size:10px;" ><img class="like" src="statics/6.png" id={{item[6]}} />&ensp;{{item[5]}}&emsp;&emsp;<img src="statics/7.png"/>&ensp;6&emsp;&emsp;{{item[1]}}&emsp;&emsp;发布时间&ensp;:&ensp;{{item[2]}}&emsp;&emsp;类型&ensp;:&ensp;{{item[3]}}</p>
                 </div>
                 {% end %}
             </div>
@@ -195,23 +214,21 @@
 
         <div class="pg_body_right">
             <div class="right_1">
-                <img src="statics/2.jpg"/>
-                <img src="statics/3.jpg"/>
+                <a href="http://www.12377.cn/"><img src="statics/2.jpg"/></a>
+                <a href="http://www.dzwww.com/xinwen/guoneixinwen/201708/t20170810_16275689.htm">
+                    <img src="statics/3.jpg"/>
+                </a>
             </div>
             <div class="right_2">
-                <img src="statics/4.jpg"/>
+                <a href="http://119.29.251.86/"><img src="statics/4.jpg"/></a>
             </div>
             <div class="right_3">
                 <img src="statics/5.jpg"/>
+                {% for i in hot_news %}
                 <div class="border">
-                    <p>评论内容</p>
+                    <a href="http://119.29.251.86/{{i[1]}}" target="_blank" style="text-decoration:none;line-height:30px;color:black;word-break:break-all;">{{i[2]}}&emsp;&emsp;{{i[0]}}</a>
                 </div>
-                <div class="border">
-                    <p>评论内容</p>
-                </div>
-                <div class="border">
-                    <p>评论内容</p>
-                </div>
+                {% end %}
             </div>
         </div>
 
@@ -282,6 +299,12 @@
             $(".model_publish").hide();
         })
 
+        $(".pg_title .user_name .log_out").on("click",function(){
+            $(".pg_title .login-register").show();
+            $('.pg_title .user_name').hide();
+            document.cookie = 'bbs=123';
+        })
+
 
 
         $(".model_register .button").on("click",function(){
@@ -324,6 +347,7 @@
                     if(data=='success'){
                         alert('登陆成功')
                         $(".model_login").hide()
+                        window.location.reload();
                     }
                     else{
                         alert('用户名或密码错误')
@@ -345,6 +369,10 @@
                         alert('发布成功');
                         window.location.reload();
                     }
+                    else if(data=='nocookie'){
+                        alert('请先登录再发帖');
+                        window.location.reload();
+                    }
                     else{
                         alert('标题重复，请修改标题')
                     }
@@ -362,6 +390,10 @@
                     if(data=='success'){
                         alert('点赞成功');
                         window.location.reload();
+                    }
+                    else if(data=='nocookie'){
+                        alert('请先登录再点赞');
+                        window.location.reload()
                     }
                     else{
                         alert('你已点过赞，请不要重复点赞');

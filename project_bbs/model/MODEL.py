@@ -36,9 +36,12 @@ class ChangeInfoUser(object):
         self.conn_finish()
         return ret
 
-    def return_user_name(self, user_id):
+    def return_user_name(self, user_id):    # 输入user_id返回用户名，没有则返回None
         self.cursor.executemany("select user_name from info_user where user_id=%s", [user_id])
         ret = self.cursor.fetchone()
+        self.conn_finish()
+        if not ret:
+            return None
         return ret[0]
 
     def update_info(self, user_name, user_pwd):  # 输入用户名和新密码密码，把info_user表中对应的用户名的密码改为新密码
@@ -79,7 +82,7 @@ class ChangeInfoNews(object):
             news_type = '游戏'
         else:
             news_type = '%'
-        self.cursor.executemany("select A.title,A.user_name,A.time,A.type,A.content,B.likes from \
+        self.cursor.executemany("select A.title,A.user_name,A.time,A.type,A.content,B.likes,A.news_id from \
         (select info_news.title,info_user.user_name,info_news.time,info_news.type,info_news.content,info_news.news_id \
         from info_news,info_user where info_news.publisher=info_user.user_id) as A left join \
         (select  news_id,count(user_id) as likes from info_like group by news_id) as B on A.news_id = B.news_id \
@@ -93,7 +96,31 @@ class ChangeInfoNews(object):
             if not ii[5]:
                 ii[5] = 0
             li_news.append(ii)
+            li_news.sort(key=lambda item: item[2], reverse=True)
         return li_news
+
+    def search_hot_info(self):  # 返回点赞数最高的前5条帖子的标题，帖子ID和点赞数
+        self.cursor.execute('select info_news.title,info_news.news_id,count(info_like.user_id) as likes from \
+                            info_news,info_like where info_news.news_id=info_like.news_id group by info_news.news_id \
+                            order by likes desc limit 5;')
+        ret = self.cursor.fetchall()
+        self.conn_finish()
+        li1 = list(ret)
+        return sorted(li1, key=lambda i: i[2], reverse=True)
+
+    def search_one_new(self, news_id):      # 输入帖子ID返回该帖子
+        self.cursor.executemany('select info_news.title,info_news.type,info_news.time,info_user.user_name,\
+                                info_news.content from info_news,info_user where info_news.publisher=info_user.user_id \
+                                and info_news.news_id=%s;', [news_id])
+        ret = self.cursor.fetchone()
+        self.conn_finish()
+        li = []
+        for i in range(len(ret)):
+            if i == 2:
+                li.append(ret[2].strftime("%Y-%m-%d %H:%M"))
+                continue
+            li.append(ret[i])
+        return li
 
     def conn_finish(self):
         self.conn.commit()
@@ -114,14 +141,31 @@ class ChangeInfoCookie(object):
         self.conn_finish()
 
     def search_info(self, cookie):      # 输入cookie,如果输入的cookie存在于数据库则返回user_id,不存在返回none
-        self.cursor.executemany("select user_id from info_cookie where cookie = %s", [cookie])
+        try:
+            self.cursor.executemany("select user_id from info_cookie where cookie = %s", [cookie])
+            ret = self.cursor.fetchone()
+            self.conn_finish()
+            if not ret:
+                return None
+            return str(ret[0])
+        except:
+            return None
+
+    def search_cookie(self, user_name):     # 输入user_name来查找cookie
+        self.cursor.executemany("select a.cookie from (select info_cookie.cookie,info_user.user_name \
+        from info_user,info_cookie where info_user.user_id=info_cookie.user_id) as a where a.user_name=%s", [user_name])
         ret = self.cursor.fetchone()
         self.conn_finish()
-        if ret == None:
-            return none
+        return ret[0]
+
+    def search_user_name(self, cookie): #通过cookie来查找user_name，存在返回user_name，不存在返回None
+        self.cursor.executemany('select A.user_name from (select info_user.user_name,info_cookie.cookie from \
+                info_user,info_cookie where info_cookie.user_id=info_user.user_id) as A where A.cookie=%s', [cookie])
+        ret = self.cursor.fetchone()
+        if not ret:
+            return False
         else:
-            ret = str(ret[0])
-            return ret
+            return ret[0]
 
     def conn_finish(self):
         self.conn.commit()
@@ -136,10 +180,9 @@ class ChangeInfoLike(object):
                                     db='project_bbs', charset='utf8')
         self.cursor = self.conn.cursor()
 
-    def add_info(self, user_id, title):     # 添加user_id和帖子序号到点赞数据库，如果存在返回False
+    def add_info(self, user_id, news_id):     # 添加user_id和帖子序号到点赞数据库，如果存在返回False
         try:
-            self.cursor.executemany("insert into info_like (news_id,user_id) values \
-                        ((select news_id from info_news where title=%s),%s)", [(title, user_id)])
+            self.cursor.executemany("insert into info_like (news_id,user_id) values (%s, %s)", [(news_id, user_id)])
             self.conn_finish()
             return True
         except:
@@ -155,6 +198,3 @@ class ChangeInfoLike(object):
         self.conn.commit()
         self.cursor.close()
         self.conn.close()
-
-
-
